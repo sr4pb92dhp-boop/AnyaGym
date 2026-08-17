@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Тренировки</title>
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Тренировки">
+<meta name="theme-color" content="#241A21">
+<link rel="apple-touch-icon" href="icon-180.png">
+<style>
+:root{
+  --bg:#241A21; --bg2:#2E212A; --card:#33242E; --line:#45303C;
+  --ink:#F2E4EA; --ink2:#B998A9;
+  --rose:#D98C97; --rose-d:#8A5A68; --sage:#9DB098; --gold:#D9B23C;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding-bottom:86px}
+.wrap{max-width:600px;margin:0 auto;padding:0 15px}
+
+header{position:sticky;top:0;z-index:20;background:var(--bg2);
+  border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top);
+  position:relative;overflow:hidden}
+.vine{position:absolute;top:-6px;right:-6px;opacity:.4;pointer-events:none}
+.htop{padding:14px 15px 0;position:relative;z-index:2}
+h1{font-family:Georgia,serif;font-style:italic;font-weight:400;font-size:22px;margin:0}
+.hsub{font-size:11.5px;color:var(--ink2);margin-top:2px}
+.tabs{display:flex;gap:6px;padding:11px 15px 9px;position:relative;z-index:2}
+.tab{flex:1;border:1px solid var(--line);background:transparent;color:var(--ink2);
+  border-radius:18px;padding:8px 3px;font-size:11px;font-weight:600;cursor:pointer;
+  line-height:1.25;text-align:center}
+.tab.on{background:var(--rose);color:#241A21;border-color:var(--rose);font-weight:700}
+.bar{display:flex;align-items:center;gap:7px;padding:0 15px 11px;position:relative;z-index:2}
+.blab{font-size:10.5px;color:var(--ink2);text-transform:uppercase;letter-spacing:.08em;flex-shrink:0}
+.gyms{display:flex;gap:5px;flex:1;overflow-x:auto}
+.gym{flex:1;min-width:66px;border:1px solid var(--line);background:transparent;color:var(--ink2);
+  border-radius:14px;padding:6px 8px;font-size:11.5px;font-weight:600;cursor:pointer;white-space:nowrap}
+.gym.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.gym.add{flex:0 0 34px;min-width:34px;border-style:dashed;font-size:14px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:15px;
+  margin:13px 0;overflow:hidden}
+.ctop{padding:14px 16px 12px;position:relative}
+.bloom{position:absolute;top:13px;right:14px}
+.enum{font-family:Georgia,serif;font-style:italic;font-size:11.5px;color:var(--rose);letter-spacing:.03em}
+.ename{font-family:Georgia,serif;font-size:17px;margin:2px 0 0;padding-right:42px;line-height:1.3}
+.motto{font-size:11.5px;color:var(--ink2);font-style:italic;margin-top:3px}
+.pick{width:100%;margin-top:10px;background:#2A1E25;color:var(--ink);
+  border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;
+  appearance:none;cursor:pointer;padding-right:32px;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='7'><path d='M1 1l4.5 4.5L10 1' stroke='%23B998A9' stroke-width='1.6' fill='none' stroke-linecap='round'/></svg>");
+  background-repeat:no-repeat;background-position:right 12px center}
+.board{display:flex;align-items:baseline;gap:8px;margin-top:11px;padding-top:11px;
+  border-top:1px solid var(--line)}
+.kg{font-family:Georgia,serif;font-size:37px;line-height:.85;cursor:pointer}
+.unit{font-size:12px;color:var(--ink2)}
+.plus{margin-left:auto;font-size:10.5px;color:var(--sage);text-align:right;line-height:1.4}
+.edit{display:flex;gap:5px;margin-top:10px}
+.eb{flex:1;background:transparent;border:1px dashed var(--line);color:var(--ink2);
+  border-radius:9px;padding:7px;font-size:11.5px;font-weight:500;cursor:pointer;
+  font-family:-apple-system,sans-serif}
+.eb.mv{flex:0 0 38px;font-size:14px;line-height:1}
+.eb.mv:disabled{opacity:.25}
+.eb.del{flex:0 0 38px;color:var(--rose);border-color:var(--rose-d)}
+.sets{background:rgba(0,0,0,.17);border-top:1px solid var(--line)}
+.set{display:flex;align-items:center;gap:7px;padding:8px 16px;border-bottom:1px solid rgba(69,48,60,.6)}
+.set:last-child{border-bottom:none}
+.sn{font-family:Georgia,serif;font-size:11.5px;color:var(--ink2);width:58px;flex-shrink:0}
+.sn i{color:var(--gold);font-style:normal;font-weight:700}
+.inp{background:#2A1E25;border:1px solid var(--line);border-radius:9px;color:var(--ink);
+  font-family:Georgia,serif;font-size:16px;padding:7px 5px;text-align:center;width:100%;min-width:0}
+.inp:focus{outline:none;border-color:var(--rose)}
+.inp::placeholder{color:#6E5460}
+.f{flex:1;min-width:0}
+.sep{color:var(--ink2);font-size:13px}
+.chk{width:31px;height:31px;flex-shrink:0;border-radius:50%;border:1.5px solid var(--rose-d);
+  background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.chk.on{background:var(--rose);border-color:var(--rose)}
+.hint{padding:8px 16px;font-size:11px;color:var(--ink2);border-top:1px solid rgba(69,48,60,.6)}
+.hint b{color:var(--ink)}
+.addex{width:100%;margin:4px 0 18px;background:transparent;border:1px dashed var(--line);
+  color:var(--ink2);border-radius:12px;padding:13px;font-size:13.5px;font-weight:600;cursor:pointer;
+  font-family:-apple-system,sans-serif}
+.foot{position:fixed;bottom:0;left:0;right:0;z-index:20;background:var(--bg2);
+  border-top:1px solid var(--line);padding:9px 15px calc(9px + env(safe-area-inset-bottom));
+  display:flex;gap:7px;align-items:center;max-width:600px;margin:0 auto}
+.prog{flex:1;min-width:0}
+.ptxt{font-size:11px;color:var(--ink2)}
+.ptxt b{font-family:Georgia,serif;font-size:15px;color:var(--ink);font-weight:400}
+.pbar{height:5px;background:rgba(0,0,0,.3);border-radius:3px;overflow:hidden;margin-top:5px}
+.pfill{height:100%;width:0;background:linear-gradient(90deg,var(--rose-d),var(--rose));
+  border-radius:3px;transition:width .3s}
+.btn{border:none;border-radius:10px;padding:11px 15px;font-size:13px;font-weight:600;
+  cursor:pointer;background:var(--rose);color:#241A21;font-family:-apple-system,sans-serif}
+.btn.g{background:transparent;color:var(--ink2);border:1px solid var(--line)}
+.toast{position:fixed;bottom:82px;left:50%;transform:translateX(-50%) translateY(16px);
+  background:var(--ink);color:var(--bg);padding:10px 17px;border-radius:10px;font-size:12.5px;
+  font-weight:600;opacity:0;transition:.25s;pointer-events:none;z-index:40;max-width:88%;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+#hist{position:fixed;inset:0;z-index:50;background:var(--bg);overflow-y:auto;
+  padding:14px 14px calc(24px + env(safe-area-inset-bottom));padding-top:calc(14px + env(safe-area-inset-top))}
+.hwrap{max-width:600px;margin:0 auto}
+.hhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.hhead b{font-size:16px;font-weight:600}
+.hempty{opacity:.6;font-size:13px;line-height:1.6;padding:26px 4px}
+.hcard{background:CARD;border-radius:13px;padding:13px 15px;margin-bottom:11px;border:1px solid LINE}
+.hname{font-size:14.5px;font-weight:600;margin-bottom:7px}
+.htop2{display:flex;align-items:center;gap:9px;margin-bottom:9px;padding-bottom:9px;border-bottom:1px solid LINE}
+.htop2 .up{color:#4CAF6D;font-size:12.5px;font-weight:600}
+.htop2 .dn{color:#D98C97;font-size:12.5px;font-weight:600}
+.htop2 .fl{opacity:.55;font-size:12.5px}
+.hcnt{opacity:.5;font-size:11.5px;margin-right:auto}
+.hrow{display:flex;gap:11px;padding:4px 0;font-size:12.5px}
+.hdate{opacity:.55;width:44px;flex-shrink:0;font-variant-numeric:tabular-nums}
+.hsets{font-variant-numeric:tabular-nums}
+.hsets i{opacity:.5;font-style:normal}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <svg class="vine" width="140" height="96" viewBox="0 0 140 96" fill="none">
+    <g stroke="#D98C97" stroke-width="1.1" fill="none" opacity=".7" stroke-linecap="round">
+      <path d="M112 26C104 44 92 60 74 72"/><path d="M126 44C120 58 108 70 92 78"/>
+    </g>
+    <g stroke="#9DB098" stroke-width="1" fill="none" opacity=".55">
+      <ellipse cx="100" cy="52" rx="7" ry="3" transform="rotate(-32 100 52)"/>
+      <ellipse cx="112" cy="62" rx="6" ry="2.6" transform="rotate(-18 112 62)"/>
+    </g>
+    <g transform="translate(100,8) scale(1.05)"><g fill="#D98C97" opacity=".9"><ellipse cx="22.0" cy="14.0" rx="4.1" ry="1.2" transform="rotate(0 22.0 14.0)"/><ellipse cx="21.0" cy="18.0" rx="4.1" ry="1.2" transform="rotate(30 21.0 18.0)"/><ellipse cx="18.0" cy="21.0" rx="4.1" ry="1.2" transform="rotate(60 18.0 21.0)"/><ellipse cx="14.0" cy="22.0" rx="4.1" ry="1.2" transform="rotate(90 14.0 22.0)"/><ellipse cx="10.0" cy="21.0" rx="4.1" ry="1.2" transform="rotate(120 10.0 21.0)"/><ellipse cx="7.0" cy="18.0" rx="4.1" ry="1.2" transform="rotate(150 7.0 18.0)"/><ellipse cx="6.0" cy="14.0" rx="4.1" ry="1.2" transform="rotate(180 6.0 14.0)"/><ellipse cx="7.0" cy="10.0" rx="4.1" ry="1.2" transform="rotate(210 7.0 10.0)"/><ellipse cx="10.0" cy="7.0" rx="4.1" ry="1.2" transform="rotate(240 10.0 7.0)"/><ellipse cx="14.0" cy="6.0" rx="4.1" ry="1.2" transform="rotate(270 14.0 6.0)"/><ellipse cx="18.0" cy="7.0" rx="4.1" ry="1.2" transform="rotate(300 18.0 7.0)"/><ellipse cx="21.0" cy="10.0" rx="4.1" ry="1.2" transform="rotate(330 21.0 10.0)"/></g><circle cx="14.0" cy="14.0" r="4.1" fill="#D9B23C"/></g>
+    <g transform="translate(120,30) scale(.75)"><g fill="#D98C97" opacity=".9"><ellipse cx="22.0" cy="14.0" rx="4.1" ry="1.2" transform="rotate(0 22.0 14.0)"/><ellipse cx="21.0" cy="18.0" rx="4.1" ry="1.2" transform="rotate(30 21.0 18.0)"/><ellipse cx="18.0" cy="21.0" rx="4.1" ry="1.2" transform="rotate(60 18.0 21.0)"/><ellipse cx="14.0" cy="22.0" rx="4.1" ry="1.2" transform="rotate(90 14.0 22.0)"/><ellipse cx="10.0" cy="21.0" rx="4.1" ry="1.2" transform="rotate(120 10.0 21.0)"/><ellipse cx="7.0" cy="18.0" rx="4.1" ry="1.2" transform="rotate(150 7.0 18.0)"/><ellipse cx="6.0" cy="14.0" rx="4.1" ry="1.2" transform="rotate(180 6.0 14.0)"/><ellipse cx="7.0" cy="10.0" rx="4.1" ry="1.2" transform="rotate(210 7.0 10.0)"/><ellipse cx="10.0" cy="7.0" rx="4.1" ry="1.2" transform="rotate(240 10.0 7.0)"/><ellipse cx="14.0" cy="6.0" rx="4.1" ry="1.2" transform="rotate(270 14.0 6.0)"/><ellipse cx="18.0" cy="7.0" rx="4.1" ry="1.2" transform="rotate(300 18.0 7.0)"/><ellipse cx="21.0" cy="10.0" rx="4.1" ry="1.2" transform="rotate(330 21.0 10.0)"/></g><circle cx="14.0" cy="14.0" r="4.1" fill="#D9B23C"/></g>
+  </svg>
+  <div class="htop">
+    <h1 id="dayTitle"></h1>
+    <div class="hsub" id="daySub"></div>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div class="bar"><span class="blab">Зал</span><div class="gyms" id="gyms"></div></div>
+</header>
+
+<div class="wrap"><div id="list"></div></div>
+
+<div class="foot">
+  <div class="prog">
+    <div class="ptxt" id="stat"></div>
+    <div class="pbar"><div class="pfill" id="pfill"></div></div>
+  </div>
+  <button class="btn g" onclick="exportData()">⤓</button>
+  <label class="btn g" style="cursor:pointer">⤒<input type="file" accept="application/json" style="display:none" onchange="importData(this)"></label>
+  <button class="btn g" onclick="showHist()">📈</button>
+  <button class="btn g" id="clearBtn">Сброс</button>
+  <button class="btn" id="saveBtn">Готово</button>
+</div>
+<div id="hist" style="display:none"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const DAISY_ON  = `<g fill="#F2E4EA" opacity=".95"><ellipse cx="22.0" cy="14.0" rx="4.1" ry="1.2" transform="rotate(0 22.0 14.0)"/><ellipse cx="21.0" cy="18.0" rx="4.1" ry="1.2" transform="rotate(30 21.0 18.0)"/><ellipse cx="18.0" cy="21.0" rx="4.1" ry="1.2" transform="rotate(60 18.0 21.0)"/><ellipse cx="14.0" cy="22.0" rx="4.1" ry="1.2" transform="rotate(90 14.0 22.0)"/><ellipse cx="10.0" cy="21.0" rx="4.1" ry="1.2" transform="rotate(120 10.0 21.0)"/><ellipse cx="7.0" cy="18.0" rx="4.1" ry="1.2" transform="rotate(150 7.0 18.0)"/><ellipse cx="6.0" cy="14.0" rx="4.1" ry="1.2" transform="rotate(180 6.0 14.0)"/><ellipse cx="7.0" cy="10.0" rx="4.1" ry="1.2" transform="rotate(210 7.0 10.0)"/><ellipse cx="10.0" cy="7.0" rx="4.1" ry="1.2" transform="rotate(240 10.0 7.0)"/><ellipse cx="14.0" cy="6.0" rx="4.1" ry="1.2" transform="rotate(270 14.0 6.0)"/><ellipse cx="18.0" cy="7.0" rx="4.1" ry="1.2" transform="rotate(300 18.0 7.0)"/><ellipse cx="21.0" cy="10.0" rx="4.1" ry="1.2" transform="rotate(330 21.0 10.0)"/></g><circle cx="14.0" cy="14.0" r="4.1" fill="#D9B23C"/>`;
+const DAISY_OFF = `<g fill="none" stroke="#B998A9" stroke-width="1" opacity=".7"><ellipse cx="22.0" cy="14.0" rx="4.1" ry="1.2" transform="rotate(0 22.0 14.0)"/><ellipse cx="21.0" cy="18.0" rx="4.1" ry="1.2" transform="rotate(30 21.0 18.0)"/><ellipse cx="18.0" cy="21.0" rx="4.1" ry="1.2" transform="rotate(60 18.0 21.0)"/><ellipse cx="14.0" cy="22.0" rx="4.1" ry="1.2" transform="rotate(90 14.0 22.0)"/><ellipse cx="10.0" cy="21.0" rx="4.1" ry="1.2" transform="rotate(120 10.0 21.0)"/><ellipse cx="7.0" cy="18.0" rx="4.1" ry="1.2" transform="rotate(150 7.0 18.0)"/><ellipse cx="6.0" cy="14.0" rx="4.1" ry="1.2" transform="rotate(180 6.0 14.0)"/><ellipse cx="7.0" cy="10.0" rx="4.1" ry="1.2" transform="rotate(210 7.0 10.0)"/><ellipse cx="10.0" cy="7.0" rx="4.1" ry="1.2" transform="rotate(240 10.0 7.0)"/><ellipse cx="14.0" cy="6.0" rx="4.1" ry="1.2" transform="rotate(270 14.0 6.0)"/><ellipse cx="18.0" cy="7.0" rx="4.1" ry="1.2" transform="rotate(300 18.0 7.0)"/><ellipse cx="21.0" cy="10.0" rx="4.1" ry="1.2" transform="rotate(330 21.0 10.0)"/></g><circle cx="14.0" cy="14.0" r="3.9" fill="none" stroke="#D9B23C" stroke-width="1.2"/>`;
+let GYMS = ["Мой зал"];
+const RAW = [{"name": "Спина · бицепс · ягодицы", "short": "Спина<br>бицепс·ягод.", "ex": [["Вертикальная тяга", "3×12", 3, "Тянем спину мечты", [["Тяга верхнего блока широким хватом", 30], ["Верт. тяга в тренажёре", 32], ["Тяга узким хватом", 28]]], ["Горизонтальная тяга", "3×12", 3, "Осанка королевы", [["Тяга блока к поясу", 30], ["Тяга в тренажёре", 28]]], ["Тяга гантели в наклоне", "3×12", 3, "Точим рельеф", [["Тяга гантели в наклоне", 12], ["Тяга в тренажёре попеременно", 0]]], ["Гиперэкстензия (акцент ягодицы)", "3×12", 3, "Крепкая поясница — лёгкая походка", [["Гиперэкстензия (собств. вес)", 0], ["Гиперэкстензия с блином", 5]]], ["Бицепс", "3×12", 3, "Ручки на зависть", [["Подъём гантелей стоя", 8], ["Молотки", 8], ["Бицепс на блоке", 12]]], ["Ягодичный мост со штангой", "3×12", 3, "Персик строится здесь", [["Hip thrust со штангой", 40], ["Ягодичный мост в Смите", 40], ["Мост одной ногой (собств.)", 0]]], ["Средняя дельта", "3×12", 3, "Точёные плечики", [["Махи гантелями в стороны", 5], ["Махи на блоке одной рукой", 6], ["Махи в тренажёре", 0]]], ["Пресс / планка", "3 подхода", 3, "Животик как у кошечки", [["Планка", 0], ["Пресс в тренажёре", 25], ["Скручивания / подъём ног", 0]]]]}, {"name": "Ноги · плечи", "short": "Ноги<br>плечи", "ex": [["Базовое на ноги", "3×12", 3, "База для персика", [["Жим ногами", 80], ["Присед в Смите", 30], ["Гакк-присед", 40]]], ["Румынская тяга", "3×12", 3, "Задняя поверхность = красивый профиль", [["Румынская тяга со штангой", 35], ["Румынская тяга с гантелями", 14]]], ["Выпады", "3×12", 3, "Каждый шаг — ближе к цели", [["Болгарские выпады с гантелями", 10], ["Румынские выпады в Смите", 20], ["Выпады ходьбой с гантелями", 8]]], ["Ягодичный мост / hip thrust", "3×12", 3, "Главная мышца дня", [["Hip thrust со штангой", 40], ["Ягодичный мост в тренажёре", 35]]], ["Разведение ног (отведение бедра)", "3×12", 3, "Круглая ягодица любит это", [["Разведение в тренажёре", 35], ["Отведение в кроссовере", 8], ["Отведение лёжа на боку (собств.)", 0]]], ["Икры", "3×12", 3, "Стройная линия до самого низа", [["Икры в тренажёре", 40]]], ["Жим на плечи", "3×12", 3, "Осанка на миллион", [["Жим гантелей сидя", 8], ["Жим в тренажёре", 15]]], ["Махи в стороны", "3×12", 3, "Точим боковую дельту", [["Махи гантелями", 5], ["Махи на блоке одной рукой", 6]]], ["Пресс / планка", "3 подхода", 3, "Плоский живот близко", [["Планка", 0], ["Пресс в тренажёре", 25], ["Скручивания / подъём ног", 0]]]]}, {"name": "Грудь · трицепс · ягодицы", "short": "Грудь<br>трицепс·ягод.", "ex": [["Жим на наклонной", "3×12", 3, "Подтянутый верх — красивый силуэт", [["Жим гантелей на наклонной", 10], ["Жим в тренажёре", 20], ["Брусья с противовесом", 0]]], ["Жим горизонтальный", "3×12", 3, "Осанка и форма", [["Жим гантелей горизонтально", 10], ["Жим от груди в тренажёре", 20], ["Отжимания от скамьи (собств.)", 0]]], ["Сведение / бабочка", "3×12", 3, "Точим линию груди", [["Сведение в тренажёре (бабочка)", 25], ["Сведение в кроссовере", 8]]], ["Трицепс на блоке", "3×12", 3, "Нежные подтянутые ручки", [["Разгибание на блоке (канат)", 15], ["Разгибание обратным хватом", 10]]], ["Трицепс изоляция", "3×12", 3, "Подтянутые ручки", [["Разгибание гантели из-за головы", 8]]], ["Ягодичный финиш", "3×12", 3, "Добиваем персик", [["Отведение ноги назад в кроссовере", 8], ["Ягодичный мост", 30]]], ["Задние дельты", "3×12", 3, "Круглое плечо — красивая спина сзади", [["Обратная бабочка (тренажёр)", 0], ["Махи в наклоне гантелями", 6], ["Задняя дельта на блоке", 0]]], ["Пресс / планка", "3 подхода", 3, "Талия мечты строится тут", [["Планка", 0], ["Пресс в тренажёре", 25], ["Скручивания / подъём ног", 0]]]]}];
+
+// [slot, scheme, sets, motto, [[name, weight],...]]
+const DAYS = RAW.map(d => ({
+  name:d.name, short:d.short,
+  ex: d.ex.map(x => [x[0], x[1], x[2], x[3], x[4].map(v => [v[0], [v[1]]])])
+}));
+
+let custom = {vars:{}, ex:{}, order:{}, gyms:null, w:{}};
+let state = {}, last = {};
+let day = 0, gym = 0;
+const $ = s => document.querySelector(s);
+
+function key(d,e){ return d+":"+e }
+function wKey(d,e,vi,g){ return d+":"+e+":"+vi+":"+g }
+function wGet(d,e,vi,g){
+  const k = wKey(d,e,vi,g);
+  if(custom.w && custom.w[k]!==undefined) return custom.w[k];
+  const arr = DAYS[d].ex[e][4][vi][1];
+  return (arr && arr[g]!==undefined) ? arr[g] : (arr && arr[0]!==undefined ? arr[0] : 0);
+}
+function wSet(d,e,vi,g,v){ custom.w = custom.w||{}; custom.w[wKey(d,e,vi,g)] = v; }
+
+function cur(d,e){
+  const k = key(d,e);
+  if(!state[k]) state[k] = {v:0, sets:Array.from({length:DAYS[d].ex[e][2]},()=>({w:"",r:"",done:false}))};
+  return state[k];
+}
+function recWeight(d,e){ return wGet(d,e,cur(d,e).v,gym) || 0; }
+function stepFor(w){ return w >= 20 ? 2.5 : (w > 0 ? 1 : 0); }   // штанга/тренажёр +2,5 · гантели +1
+
+function applyCustom(){
+  Object.keys(custom.ex||{}).forEach(d=>{
+    (custom.ex[d]||[]).forEach(x=>{
+      if(!DAYS[d].ex.some(q=>q[0]===x[0]))
+        DAYS[d].ex.push([x[0],x[1],x[2],x[3]||"",x[4].map(v=>[v[0],v[1].slice(),true]),true]);
+    });
+  });
+  Object.keys(custom.order||{}).forEach(d=>{
+    const want = custom.order[d]; if(!want) return;
+    const by={}; DAYS[d].ex.forEach(x=>by[x[0]]=x);
+    const out=[]; want.forEach(n=>{ if(by[n]){ out.push(by[n]); delete by[n]; } });
+    DAYS[d].ex.forEach(x=>{ if(by[x[0]]) out.push(x); });
+    if(out.length===DAYS[d].ex.length) DAYS[d].ex = out;
+  });
+  Object.keys(custom.vars||{}).forEach(k=>{
+    const [d,e]=k.split(":").map(Number);
+    if(!DAYS[d]||!DAYS[d].ex[e]) return;
+    (custom.vars[k]||[]).forEach(v=>{
+      if(!DAYS[d].ex[e][4].some(q=>q[0]===v[0])) DAYS[d].ex[e][4].push([v[0],v[1].slice(),true]);
+    });
+  });
+}
+function saveCustom(){ try{ localStorage.setItem("anya:custom", JSON.stringify(custom)); }catch(e){} }
+function askNum(m,d){ const r=prompt(m, d===undefined?"":String(d)); if(r===null) return null;
+  const n=parseFloat(String(r).replace(",",".")); return isNaN(n)?0:n; }
+
+function drawHeader(){
+  $("#tabs").innerHTML = DAYS.map((x,i)=>
+    `<button class="tab ${i===day?'on':''}" onclick="setDay(${i})">${x.short}</button>`).join("");
+  $("#gyms").innerHTML = GYMS.map((g,i)=>
+    `<button class="gym ${i===gym?'on':''}" onclick="${i===gym?'editGym()':'setGym('+i+')'}">${g}</button>`).join("")
+    + `<button class="gym add" onclick="addGym()">＋</button>`;
+  $("#dayTitle").textContent = DAYS[day].name;
+  $("#daySub").textContent = `${DAYS[day].ex.length} упражнений · ${GYMS[gym]}`;
+}
+
+function drawList(){
+  $("#list").innerHTML = DAYS[day].ex.map((ex,e)=>{
+    const [slot,scheme,nsets,motto,vars] = ex;
+    const st = cur(day,e), w = recWeight(day,e), lk = last[key(day,e)];
+    const allDone = st.sets.every(s=>s.done);
+    const step = stepFor(w);
+
+    const opts = vars.map((v,i)=>{
+      const vw = wGet(day,e,i,gym);
+      return `<option value="${i}" ${i===st.v?'selected':''}>${v[0]}${vw?' · '+vw+' кг':''}</option>`;
+    }).join("");
+
+    const sets = st.sets.map((s,i)=>{
+      const isLast = i===st.sets.length-1;
+      const ph = isLast && w && step ? (w+step) : (w||"кг");
+      return `<div class="set">
+        <span class="sn">Подход ${i+1}${isLast&&step?' <i>+</i>':''}</span>
+        <div class="f"><input class="inp" type="text" inputmode="decimal" placeholder="${ph}"
+          value="${s.w}" oninput="upd(${e},${i},'w',this.value)"></div>
+        <span class="sep">/</span>
+        <div class="f"><input class="inp" type="text" inputmode="numeric" placeholder="12"
+          value="${s.r}" oninput="upd(${e},${i},'r',this.value)"></div>
+        <button class="chk ${s.done?'on':''}" onclick="tog(${e},${i})">${s.done?'<svg width="12" height="9" viewBox="0 0 13 10"><path d="M1 5l4 3.5L12 1" stroke="#241A21" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>':''}</button>
+      </div>`;
+    }).join("");
+
+    const hint = lk ? `<div class="hint">Прошлый раз: <b>${lk.sets.map(s=>s.w?`${s.w}/${s.r||"?"}`:"—").join("  ")}</b></div>` : "";
+
+    return `<div class="card">
+      <div class="ctop">
+        <span class="bloom">${allDone?DAISY_ON:DAISY_OFF}</span>
+        <div class="enum">упражнение ${e+1} · ${scheme}</div>
+        <div class="ename">${slot}</div>
+        ${motto?`<div class="motto">«${motto}»</div>`:""}
+        <select class="pick" ${vars.length<2?'disabled':''} onchange="setVar(${e},this.value)">${opts}</select>
+        <div class="board">
+          <span class="kg" onclick="editW(${e})">${w||"—"}</span><span class="unit">кг</span>
+          ${w&&step?`<span class="plus">последний подход<br>${w+step} кг</span>`:""}
+        </div>
+        <div class="edit">
+          <button class="eb mv" onclick="move(${e},-1)" ${e===0?'disabled':''}>↑</button>
+          <button class="eb mv" onclick="move(${e},1)" ${e===DAYS[day].ex.length-1?'disabled':''}>↓</button>
+          <button class="eb" onclick="addVar(${e})">＋ вариант</button>
+          ${vars.length>1 && vars[st.v][2] ? `<button class="eb del" onclick="delVar(${e})">✕</button>` : ""}
+        </div>
+      </div>
+      <div class="sets">${sets}</div>
+      ${hint}
+    </div>`;
+  }).join("") + `<button class="addex" onclick="addEx()">＋ добавить упражнение</button>`;
+  drawStat();
+}
+
+function drawStat(){
+  let done=0, all=0, vol=0;
+  DAYS[day].ex.forEach((ex,e)=>cur(day,e).sets.forEach(s=>{
+    all++; if(s.done) done++;
+    const w=parseFloat(String(s.w).replace(",",".")), r=parseInt(s.r);
+    if(w&&r) vol+=w*r;
+  }));
+  $("#stat").innerHTML = `<b>${done}</b> из ${all} подходов${vol?` · <b>${Math.round(vol)}</b> кг`:""}`;
+  $("#pfill").style.width = (all? done/all*100 : 0)+"%";
+}
+
+window.setDay = i => { day=i; drawHeader(); drawList(); };
+window.setGym = i => { gym=i; drawHeader(); drawList(); save(true); };
+window.setVar = (e,v) => { cur(day,e).v=+v; drawList(); save(true); };
+window.upd = (e,i,f,val) => { cur(day,e).sets[i][f]=val; drawStat(); save(true); };
+window.tog = (e,i) => { const s=cur(day,e).sets[i]; s.done=!s.done;
+  if(s.done&&!s.w){ const w=recWeight(day,e); const isLast=i===cur(day,e).sets.length-1;
+    s.w = String(isLast&&w?w+stepFor(w):(w||"")); }
+  drawList(); save(true); };
+
+window.addGym = function(){
+  const n = prompt("Название зала:"); if(!n||!n.trim()) return;
+  const g = GYMS.length;
+  DAYS.forEach((dd,d)=>dd.ex.forEach((ex,e)=>ex[4].forEach((v,vi)=>wSet(d,e,vi,g,wGet(d,e,vi,gym)))));
+  GYMS.push(n.trim()); custom.gyms = GYMS.slice(); gym = g;
+  saveCustom(); drawHeader(); drawList();
+  toast("Зал добавлен — веса скопированы, поправь тапом по цифре");
+};
+window.editGym = function(){
+  const c = GYMS[gym];
+  const r = prompt("Название зала (стереть и сохранить = удалить):", c);
+  if(r===null) return;
+  if(!r.trim()){
+    if(GYMS.length<2){ toast("Последний зал не удалить"); return; }
+    if(!confirm("Удалить зал «"+c+"» вместе с весами?")) return;
+    const del=gym; GYMS.splice(del,1);
+    const nw={}; Object.keys(custom.w||{}).forEach(k=>{
+      const [d,e,vi,g]=k.split(":").map(Number);
+      if(g===del) return;
+      nw[wKey(d,e,vi,g>del?g-1:g)] = custom.w[k];
+    });
+    custom.w=nw; custom.gyms=GYMS.slice(); gym=0;
+    saveCustom(); drawHeader(); drawList(); toast("Зал удалён"); return;
+  }
+  GYMS[gym]=r.trim(); custom.gyms=GYMS.slice(); saveCustom(); drawHeader(); drawList();
+};
+
+window.move = function(e,dir){
+  const L=DAYS[day].ex, t=e+dir;
+  if(t<0||t>=L.length) return;
+  [L[e],L[t]]=[L[t],L[e]];
+  [state,last].forEach(obj=>{
+    const a=obj[key(day,e)], b=obj[key(day,t)];
+    if(a===undefined&&b===undefined) return;
+    if(b===undefined) delete obj[key(day,e)]; else obj[key(day,e)]=b;
+    if(a===undefined) delete obj[key(day,t)]; else obj[key(day,t)]=a;
+  });
+  const ca=custom.vars[key(day,e)], cb=custom.vars[key(day,t)];
+  if(ca!==undefined||cb!==undefined){
+    if(cb===undefined) delete custom.vars[key(day,e)]; else custom.vars[key(day,e)]=cb;
+    if(ca===undefined) delete custom.vars[key(day,t)]; else custom.vars[key(day,t)]=ca;
+  }
+  custom.order=custom.order||{}; custom.order[day]=L.map(x=>x[0]);
+  saveCustom(); save(true); drawList();
+};
+
+window.addVar = function(e){
+  const n=prompt("Название упражнения:"); if(!n||!n.trim()) return;
+  const w=askNum("Рабочий вес, кг (0 — без веса):",0); if(w===null) return;
+  const k=key(day,e); custom.vars[k]=custom.vars[k]||[];
+  const arr=[]; arr[gym]=w;
+  custom.vars[k].push([n.trim(),arr,true]);
+  DAYS[day].ex[e][4].push([n.trim(),arr,true]);
+  const vi=DAYS[day].ex[e][4].length-1;
+  wSet(day,e,vi,gym,w);
+  cur(day,e).v=vi; saveCustom(); drawList(); toast("Вариант добавлен");
+};
+window.delVar = function(e){
+  const st=cur(day,e), v=DAYS[day].ex[e][4][st.v];
+  if(!v||!v[2]) return;
+  if(!confirm("Удалить «"+v[0]+"»?")) return;
+  DAYS[day].ex[e][4].splice(st.v,1);
+  const k=key(day,e); custom.vars[k]=(custom.vars[k]||[]).filter(x=>x[0]!==v[0]);
+  st.v=0; saveCustom(); drawList(); toast("Удалено");
+};
+window.editW = function(e){
+  const st=cur(day,e), v=DAYS[day].ex[e][4][st.v];
+  const w=askNum("Рабочий вес в зале «"+GYMS[gym]+"», кг:", wGet(day,e,st.v,gym));
+  if(w===null) return;
+  wSet(day,e,st.v,gym,w); saveCustom(); drawList(); toast("Вес обновлён");
+};
+window.addEx = function(){
+  const n=prompt("Название упражнения:"); if(!n||!n.trim()) return;
+  const sc=prompt("Схема (например 3×12):","3×12")||"3×12";
+  let k=parseInt(sc); if(!k||k<1||k>8) k=3;
+  const w=askNum("Рабочий вес, кг (0 — без веса):",0); if(w===null) return;
+  const arr=[]; arr[gym]=w;
+  const item=[n.trim(),sc,k,"",[[n.trim(),arr,true]]];
+  custom.ex[day]=custom.ex[day]||[]; custom.ex[day].push(item);
+  DAYS[day].ex.push([item[0],item[1],item[2],item[3],item[4].map(v=>[v[0],v[1].slice(),true]),true]);
+  wSet(day,DAYS[day].ex.length-1,0,gym,w);
+  if(custom.order&&custom.order[day]) custom.order[day].push(item[0]);
+  saveCustom(); drawList(); toast("Упражнение добавлено");
+};
+
+let tm=null;
+function toast(m){ const el=$("#toast"); el.textContent=m; el.classList.add("show");
+  clearTimeout(tm); tm=setTimeout(()=>el.classList.remove("show"),1800); }
+
+let sv=null;
+function save(silent){
+  clearTimeout(sv);
+  sv=setTimeout(()=>{ try{
+    localStorage.setItem("anya:current", JSON.stringify({state,gym,day}));
+    if(!silent) toast("Сохранено");
+  }catch(e){} }, silent?500:0);
+}
+
+$("#saveBtn").onclick = ()=>{
+  try{
+    const stamp = new Date().toISOString().slice(0,10);
+    // в историю пишем НАЗВАНИЯ и цифры — так запись не поедет при перестановке упражнений
+    const items = DAYS[day].ex.map((ex,e)=>({
+      name: ex[0],
+      sets: cur(day,e).sets.filter(s=>s.w||s.r).map(s=>({w:s.w, r:s.r}))
+    })).filter(x=>x.sets.length);
+    if(!items.length){ toast("Нечего записывать — заполни подходы"); return; }
+    localStorage.setItem("anya:hist:"+stamp+":"+day, JSON.stringify({date:stamp, day, items}));
+    localStorage.setItem("anya:last:"+day, JSON.stringify(state));
+    last={}; Object.keys(state).forEach(k=>{ if(k.startsWith(day+":")) last[k]=JSON.parse(JSON.stringify(state[k])); });
+    DAYS[day].ex.forEach((ex,e)=>cur(day,e).sets.forEach(s=>{s.w="";s.r="";s.done=false;}));
+    save(true); drawList(); toast("Тренировка записана");
+  }catch(e){ toast("Ошибка записи"); }
+};
+
+// ── История и прогресс ──
+function histFor(d){
+  const out=[];
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(!k || !k.startsWith("anya:hist:")) continue;
+    if(!k.endsWith(":"+d)) continue;
+    try{ const o=JSON.parse(localStorage.getItem(k)); if(o && o.items) out.push(o); }catch(e){}
+  }
+  return out.sort((a,b)=> a.date < b.date ? 1 : -1);
+}
+function maxW(sets){
+  let m=0; sets.forEach(s=>{ const w=parseFloat(String(s.w).replace(",",".")); if(w>m) m=w; });
+  return m;
+}
+function spark(vals){
+  if(vals.length<2) return "";
+  const w=104,h=26,mn=Math.min(...vals),mx=Math.max(...vals),rg=(mx-mn)||1;
+  const pts=vals.map((v,i)=>[ (i/(vals.length-1))*w, h-2-((v-mn)/rg)*(h-6) ]);
+  const dd=pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ");
+  const lastP=pts[pts.length-1];
+  return `<svg width="${w}" height="${h}" style="display:block">
+    <path d="${dd}" stroke="#D98C97" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="${lastP[0].toFixed(1)}" cy="${lastP[1].toFixed(1)}" r="2.6" fill="#D98C97"/></svg>`;
+}
+window.showHist = function(){
+  const H = histFor(day);
+  const box = $("#hist");
+  if(!H.length){
+    box.innerHTML = `<div class="hwrap"><div class="hhead"><b>История — ${DAYS[day].name||DAYS[day].short.replace(/<br>/g," ")}</b>
+      <button class="btn g" onclick="hideHist()">Закрыть</button></div>
+      <div class="hempty">Пока пусто. Заполни подходы и нажми «Готово» — тренировка попадёт сюда.</div></div>`;
+    box.style.display="block"; return;
+  }
+  // собираем по упражнениям
+  const names=[]; H.forEach(h=>h.items.forEach(it=>{ if(!names.includes(it.name)) names.push(it.name); }));
+  const cards = names.map(n=>{
+    const rows = H.filter(h=>h.items.some(it=>it.name===n))
+      .map(h=>({date:h.date, sets:h.items.find(it=>it.name===n).sets}));
+    const series = rows.map(r=>maxW(r.sets)).reverse().filter(v=>v>0);
+    const first=series[0], lastv=series[series.length-1];
+    let trend="";
+    if(series.length>1 && first){
+      const dlt=+(lastv-first).toFixed(1);
+      trend = dlt>0 ? `<span class="up">+${dlt} кг</span>`
+            : dlt<0 ? `<span class="dn">${dlt} кг</span>`
+            : `<span class="fl">без изменений</span>`;
+    }
+    const list = rows.slice(0,8).map(r=>{
+      const d=r.date.slice(8,10)+"."+r.date.slice(5,7);
+      return `<div class="hrow"><span class="hdate">${d}</span>
+        <span class="hsets">${r.sets.map(s=>`${s.w||"—"}<i>/${s.r||"?"}</i>`).join("  ")}</span></div>`;
+    }).join("");
+    return `<div class="hcard">
+      <div class="hname">${n}</div>
+      <div class="htop2">${trend}<span class="hcnt">${rows.length} трен.</span>${spark(series)}</div>
+      ${list}</div>`;
+  }).join("");
+  box.innerHTML = `<div class="hwrap"><div class="hhead"><b>История — ${DAYS[day].name||DAYS[day].short.replace(/<br>/g," ")}</b>
+    <button class="btn g" onclick="hideHist()">Закрыть</button></div>${cards}</div>`;
+  box.style.display="block";
+};
+window.hideHist = function(){ $("#hist").style.display="none"; };
+$("#clearBtn").onclick = ()=>{
+  DAYS[day].ex.forEach((ex,e)=>cur(day,e).sets.forEach(s=>{s.w="";s.r="";s.done=false;}));
+  drawList(); save(true); toast("Очищено");
+};
+
+window.exportData = function(){
+  const dump={v:1, saved:new Date().toISOString(), state, last, custom, gyms:GYMS,
+    hist:Object.keys(localStorage).filter(k=>k.startsWith("anya:hist:"))
+      .reduce((a,k)=>(a[k]=localStorage.getItem(k),a),{})};
+  const blob=new Blob([JSON.stringify(dump,null,1)],{type:"application/json"});
+  const name="trenirovki-anya-"+new Date().toISOString().slice(0,10)+".json";
+  if(navigator.share&&navigator.canShare&&navigator.canShare({files:[new File([blob],name)]}))
+    navigator.share({files:[new File([blob],name,{type:"application/json"})],title:"Тренировки"});
+  else { const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; a.click(); }
+  toast("Файл готов");
+};
+window.importData = function(inp){
+  const f=inp.files[0]; if(!f) return;
+  const rd=new FileReader();
+  rd.onload=()=>{ try{
+    const o=JSON.parse(rd.result);
+    state=o.state||{}; last=o.last||{};
+    if(o.custom){ custom=o.custom; custom.w=custom.w||{}; }
+    if(Array.isArray(o.gyms)&&o.gyms.length) GYMS=o.gyms.slice();
+    if(o.hist) Object.keys(o.hist).forEach(k=>localStorage.setItem(k,o.hist[k]));
+    saveCustom(); applyCustom(); save(true); drawHeader(); drawList(); toast("Данные загружены");
+  }catch(e){ toast("Файл не читается"); } };
+  rd.readAsText(f);
+};
+
+try{ drawHeader(); drawList(); }
+catch(err){ $("#list").innerHTML='<div style="padding:20px;color:#D98C97">Ошибка: '+err.message+'</div>'; }
+
+(function load(){
+  try{
+    const rc=localStorage.getItem("anya:custom");
+    if(rc){ custom=JSON.parse(rc); custom.w=custom.w||{};
+      if(Array.isArray(custom.gyms)&&custom.gyms.length) GYMS=custom.gyms.slice();
+      applyCustom(); }
+    const r=localStorage.getItem("anya:current");
+    if(r){ const o=JSON.parse(r); state=o.state||{};
+      if(typeof o.gym==="number"&&o.gym<GYMS.length) gym=o.gym;
+      if(typeof o.day==="number") day=o.day; }
+    for(let d=0; d<DAYS.length; d++){
+      const x=localStorage.getItem("anya:last:"+d);
+      if(x){ const o=JSON.parse(x); Object.keys(o).forEach(k=>{ if(k.startsWith(d+":")) last[k]=o[k]; }); }
+    }
+    drawHeader(); drawList();
+  }catch(e){}
+})();
+
+if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+</body>
+</html>
