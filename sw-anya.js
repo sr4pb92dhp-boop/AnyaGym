@@ -1,5 +1,5 @@
 // v27 — сеть в приоритете, кэш как запасной вариант
-const CACHE = "anya-v30";
+const CACHE = "anya-v31";
 self.addEventListener("install", e => {
   self.skipWaiting();
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(["index.html","manifest.json"])).catch(()=>{}));
